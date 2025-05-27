@@ -5,21 +5,21 @@ import hello.hello_spring.repository.MemberRepository;
 import hello.hello_spring.repository.MemoryMemberRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-
-class MemberServiceTest {
+import static org.junit.jupiter.api.Assertions.assertThrows;
+@SpringBootTest
+@Transactional //성공후 커밋이 안돼기 때문에 DB반영 X
+class MemberServiceIntegrationTest {
+    @Autowired
     MemberService memberService;
-    MemoryMemberRepository memberRepository;
+    @Autowired
+    MemberRepository memberRepository;
 
-    @BeforeEach
-    public void afterEach(){
-       memberRepository = new MemoryMemberRepository();
-       memberService = new MemberService(memberRepository);
-    }
 
     @Test
     void join() {
@@ -45,13 +45,7 @@ class MemberServiceTest {
         memberService.join(member1);
         IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> memberService.join(member2));
         assertThat(e.getMessage()).isEqualTo("이미 존재하는 회원입니다.");
-//        try {
-//            Long saveId2 = memberService.join(member2);
-//            fail();
-//        }catch (Exception e){
-//            assertThat(e.getMessage().equals("이미 존재하는 회원입니다."));
-//        }
-        //then
+
 
     }
 
